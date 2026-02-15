@@ -153,6 +153,28 @@
     const output = document.querySelector(".output");
     const B = new Base;
 
+    const encodeH = () => {
+        const value = text.value;
+        const encoded = B.encode(value);
+        output.value = encoded;
+    }
+
+    const decodeH = () => {
+        const value = output.value;
+        const decoded = B.decode(value);
+        text.value = decoded;
+    }
+
+    encodeH();
+    decodeH();
+    text.addEventListener("input", encodeH);
+    output.addEventListener("input", decodeH);
+
+    document.querySelector(".clear").addEventListener("click", () => {
+        text.value = "";
+        output.value = "";
+    });
+
     class Dialog {
         constructor(openButton){
             this.setBase();
@@ -174,41 +196,27 @@
                 B.setCharset(Icharset.value);
                 B.setSeparator(Iseparator.value);
                 this.setBase();
+                //update
+                encodeH();
+                decodeH();
             });
             dialog.querySelector("button[cancel]").addEventListener("click",() => dialog.close());
             dialog.querySelector("button[reset]").addEventListener("click", () => {
                 dialog.close();
                 B.default();
                 this.setBase();
+                //update
+                encodeH();
+                decodeH();
             });
         }
         setBase(){
             document.querySelector(".base").innerText = B.getBase();
-            document.head.querySelector("title").innerText = `Base${B.getBase()} encoder decoder`;
+            document.head.querySelector("title").innerText = `base${B.getBase()} encoder decoder`;
         }
     }
     const D = new Dialog(document.querySelector(".icon.edit"));
 
-    const encodeH = () => {
-        const value = text.value;
-        const encoded = B.encode(value);
-        output.value = encoded;
-    }
-
-    const decodeH = () => {
-        const value = output.value;
-        const decoded = B.decode(value);
-        text.value = decoded;
-    }
-
-    encodeH();
-    decodeH();
-    text.addEventListener("input", encodeH);
-    output.addEventListener("input", decodeH);
-    document.querySelector(".clear").addEventListener("click", () => {
-        text.value = "";
-        output.value = "";
-    });
     document.querySelectorAll("textarea").forEach(textarea => {
         const div = document.createElement("div");
         const copy = document.createElement("button");
