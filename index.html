@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base4 encoder decoder</title>
+    <title>base++ encoder decoder</title>
     <style>
         :root {
             color-scheme: dark;
@@ -55,18 +55,18 @@
     </style>
 </head>
 <body>
-    <h1>Base<span class="base">4</span><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg></h1>
-    <h3>Codificador - Decodificador</h3>
-    <button class="clear">Limpiar</button>
-    <label>Texto</label>
+    <h1>base<span class="base">4</span><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg></h1>
+    <h3>coder - decoder</h3>
+    <button class="clear">clear</button>
+    <label>text</label>
     <textarea class="text" placeholder="Text"></textarea>
-    <label>salida</label>
+    <label>output</label>
     <textarea class="salida" placeholder="salida"></textarea>
-    <label>By Matius</label>
+    <label>by matius54</label>
     <dialog>
         <div>
             <fieldset>
-                <legend>Ajustes actuales</legend>
+                <legend>current settings</legend>
                 <ul>
                     <li>Base: <span base>4</span></li>
                     <li>Charset: <span charset></span></li>
@@ -75,9 +75,9 @@
             </fieldset>
             <input charset placeholder="Charset">
             <input separator placeholder="Separador" maxlength="1">
-            <button save>Guardar</button>
-            <button cancel>Cancelar</button>
-            <button reset>Reestablecer</button>
+            <button save>save</button>
+            <button cancel>cancel</button>
+            <button reset>reset</button>
         </div>
     </dialog>
 </body>
@@ -215,9 +215,9 @@
         const paste = document.createElement("button");
         const add = document.createElement("button");
         let text;
-        copy.innerText = "copiar";
-        paste.innerText = "pegar";
-        add.innerText = "añadir";
+        copy.innerText = "copy";
+        paste.innerText = "paste";
+        add.innerText = "add";
         copy.addEventListener("click", () => {
             if(text = textarea.value){
                 navigator.clipboard.writeText(text);
