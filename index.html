@@ -61,7 +61,7 @@
     <label>text</label>
     <textarea class="text" placeholder="Text"></textarea>
     <label>output</label>
-    <textarea class="salida" placeholder="salida"></textarea>
+    <textarea class="output" placeholder="output"></textarea>
     <label>by matius54</label>
     <dialog>
         <div>
@@ -70,11 +70,11 @@
                 <ul>
                     <li>Base: <span base>4</span></li>
                     <li>Charset: <span charset></span></li>
-                    <li>Separador: "<span separator></span>"</li>
+                    <li>Separator: "<span separator></span>"</li>
                 </ul>
             </fieldset>
             <input charset placeholder="Charset">
-            <input separator placeholder="Separador" maxlength="1">
+            <input separator placeholder="Separator" maxlength="1">
             <button save>save</button>
             <button cancel>cancel</button>
             <button reset>reset</button>
@@ -150,7 +150,7 @@
         }
     }
     const text = document.querySelector(".text");
-    const output = document.querySelector(".salida");
+    const output = document.querySelector(".output");
     const B = new Base;
 
     class Dialog {
