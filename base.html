@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base4 encoder decoder</title>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+        html {
+            width: 100%;
+        }
+        body {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+            margin: 0 auto;
+            width: fit-content;
+            max-width: 100vw;
+        }
+        textarea {
+            height: 10rem;
+        }
+        span {
+            max-width: 10rem;
+            overflow: hidden;
+        }
+        .icon {
+            padding: .5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 100ms;
+        }
+        .icon:hover {
+            background-color: rgba(255, 255, 255, .4);
+        }
+        dialog {
+            border: none;
+            border-radius: 1rem;
+        }
+        dialog div {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+        dialog ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Base<span class="base">4</span><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg></h1>
+    <h3>Codificador - Decodificador</h3>
+    <button class="clear">Limpiar</button>
+    <label>Texto</label>
+    <textarea class="text" placeholder="Text"></textarea>
+    <label>salida</label>
+    <textarea class="salida" placeholder="salida"></textarea>
+    <label>By Matius</label>
+    <dialog>
+        <div>
+            <fieldset>
+                <legend>Ajustes actuales</legend>
+                <ul>
+                    <li>Base: <span base>4</span></li>
+                    <li>Charset: <span charset></span></li>
+                    <li>Separador: "<span separator></span>"</li>
+                </ul>
+            </fieldset>
+            <input charset placeholder="Charset">
+            <input separator placeholder="Separador" maxlength="1">
+            <button save>Guardar</button>
+            <button cancel>Cancelar</button>
+            <button reset>Reestablecer</button>
+        </div>
+    </dialog>
+</body>
+<script>
+    class Base {
+        #charset;
+        #separator;
+
+        constructor(charset, separator){
+            this.default();
+            this.setCharset(charset);
+            this.setSeparator(separator);
+        }
+        setCharset(charset){
+            if(typeof charset === "string" && charset){
+                let newCharset = [...new Set(charset)].join("");
+                newCharset = newCharset.replace(new RegExp(this.#separator,"g"), "");
+                if(newCharset.length >= 2) this.#charset = newCharset;
+            }
+        }
+        getCharset(){
+            return this.#charset;
+        }
+        setSeparator(separator){
+            if(typeof separator === "string" && separator){
+                const newSeparator = separator[0];
+                if(this.#charset.indexOf(newSeparator) === -1) this.#separator = newSeparator;
+            }
+        }
+        getSeparator(){
+            return this.#separator;
+        }
+        getBase(){
+            return this.#charset.length;
+        }
+        default(){
+            this.setCharset("a1c2");
+            this.setSeparator(" ");
+        }
+        encode(input){
+            let output = [];
+            for(const idx in input){
+                const char = input[idx];
+                let charCode = char.charCodeAt();
+                let baseCode = "";
+                while(charCode){
+                    baseCode += this.#charset[charCode % this.#charset.length];
+                    charCode = Math.floor(charCode / this.#charset.length);
+                }
+                output.push(baseCode);
+            }
+            return output.join(this.#separator);
+        }
+        decode(input){
+            let output = "";
+            input.split(this.#separator).forEach(baseCode => {
+                let charCode = 0;
+                let idx = 0;
+                for(const bIndex in baseCode){
+                    const bChar = baseCode[bIndex];
+                    const charIdx = this.#charset.indexOf(bChar);
+                    if(charIdx !== -1){
+                        charCode += charIdx * Math.pow(this.#charset.length, idx);
+                        idx++;
+                    }
+                }
+                if(charCode) output += String.fromCharCode(charCode);
+            });
+            return output;
+        }
+    }
+    const text = document.querySelector(".text");
+    const output = document.querySelector(".salida");
+    const B = new Base;
+
+    class Dialog {
+        constructor(openButton){
+            this.setBase();
+            const dialog = document.querySelector("dialog");
+            const Icharset = dialog.querySelector("input[charset]");
+            const Iseparator = dialog.querySelector("input[separator]");
+            openButton.addEventListener("click", ()=>{
+                dialog.showModal();
+                const charset = B.getCharset();
+                const separator = B.getSeparator();
+                dialog.querySelector("span[base]").innerText = B.getBase();
+                dialog.querySelector("span[charset]").innerText = charset;
+                dialog.querySelector("span[separator]").innerText = separator;
+                Icharset.value = charset;
+                Iseparator.value = separator;
+            });
+            dialog.querySelector("button[save]").addEventListener("click",() => {
+                dialog.close();
+                B.setCharset(Icharset.value);
+                B.setSeparator(Iseparator.value);
+                this.setBase();
+            });
+            dialog.querySelector("button[cancel]").addEventListener("click",() => dialog.close());
+            dialog.querySelector("button[reset]").addEventListener("click", () => {
+                dialog.close();
+                B.default();
+                this.setBase();
+            });
+        }
+        setBase(){
+            document.querySelector(".base").innerText = B.getBase();
+            document.head.querySelector("title").innerText = `Base${B.getBase()} encoder decoder`;
+        }
+    }
+    const D = new Dialog(document.querySelector(".icon.edit"));
+
+    const encodeH = () => {
+        const value = text.value;
+        const encoded = B.encode(value);
+        output.value = encoded;
+    }
+
+    const decodeH = () => {
+        const value = output.value;
+        const decoded = B.decode(value);
+        text.value = decoded;
+    }
+
+    encodeH();
+    decodeH();
+    text.addEventListener("input", encodeH);
+    output.addEventListener("input", decodeH);
+    document.querySelector(".clear").addEventListener("click", () => {
+        text.value = "";
+        output.value = "";
+    });
+    document.querySelectorAll("textarea").forEach(textarea => {
+        const div = document.createElement("div");
+        const copy = document.createElement("button");
+        const paste = document.createElement("button");
+        const add = document.createElement("button");
+        let text;
+        copy.innerText = "copiar";
+        paste.innerText = "pegar";
+        add.innerText = "añadir";
+        copy.addEventListener("click", () => {
+            if(text = textarea.value){
+                navigator.clipboard.writeText(text);
+            }
+        });
+        const pasteFunc = add => {
+            const inputEvent = new Event("input", {
+                bubbles: true,
+                cancelable: false,
+                target: textarea
+            });
+            navigator.clipboard.readText()
+            .then(tx => {
+                if(add){
+                    textarea.value += tx;
+                }else{
+                    textarea.value = tx;
+                }
+                textarea.dispatchEvent(inputEvent);
+            });
+        };
+        paste.addEventListener("click", ()=>pasteFunc(false));
+        add.addEventListener("click", ()=>pasteFunc(true));
+        div.appendChild(copy);
+        div.appendChild(paste);
+        div.appendChild(add);
+        textarea.insertAdjacentElement("beforebegin",div);
+    })
+</script>
+</html>
