@@ -117,6 +117,8 @@
             if(savedCharset && savedSeparator){
                 this.#charset = savedCharset
                 this.#separator = savedSeparator
+            }else{
+                this.default()
             }
         }
         getSeparator(){
