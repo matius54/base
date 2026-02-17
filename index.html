@@ -86,16 +86,17 @@
         #charset;
         #separator;
 
-        constructor(charset, separator){
-            this.default();
-            this.setCharset(charset);
-            this.setSeparator(separator);
+        constructor(){
+            this.#load();
         }
         setCharset(charset){
             if(typeof charset === "string" && charset){
                 let newCharset = [...new Set(charset)].join("");
                 newCharset = newCharset.replace(new RegExp(this.#separator,"g"), "");
-                if(newCharset.length >= 2) this.#charset = newCharset;
+                if(newCharset.length >= 2){
+                    this.#charset = newCharset;
+                    localStorage.setItem("charset", newCharset)
+                }
             }
         }
         getCharset(){
@@ -104,7 +105,18 @@
         setSeparator(separator){
             if(typeof separator === "string" && separator){
                 const newSeparator = separator[0];
-                if(this.#charset.indexOf(newSeparator) === -1) this.#separator = newSeparator;
+                if(this.#charset.indexOf(newSeparator) === -1){
+                    this.#separator = newSeparator;
+                    localStorage.setItem("separator", newSeparator)
+                }
+            }
+        }
+        #load(){
+            const savedCharset = localStorage.getItem("charset")
+            const savedSeparator = localStorage.getItem("separator")
+            if(savedCharset && savedSeparator){
+                this.#charset = savedCharset
+                this.#separator = savedSeparator
             }
         }
         getSeparator(){
